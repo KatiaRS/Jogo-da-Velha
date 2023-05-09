@@ -9,7 +9,11 @@ enum class Jogador(var simbolo: String) {
 }
 
 class JogoDaVelha {
-    fun imprimirTabuleiro(tabuleiro: Array<Array<Jogador>>) {
+    var jogador1: String? = null
+    var jogador2: String? = null
+    var tabuleiro = criarTabuleiro()
+
+    fun imprimirTabuleiro() {
 
         for (linha in 0 until 3) {
             for (coluna in 0 until 3) {
@@ -78,71 +82,57 @@ class JogoDaVelha {
                 verificaGanhadorLinha(tabuleiro)
     }
 
-//    fun reiniciarJogo(tabuleiro: Array<Array<Char?>>, jogadorAtual,) {
-//        for (linha in 0 until 3) {
-//            for (coluna in 0 until 3){
-//                imprimirTabuleiro(tabuleiro)
-//            }
-//        }
-//        jogadorAtual = when (jogadorAtual){
-//            Jogador.X == Jogador.O
-//            Jogador.O == Jogador.X
-//        }
-//        println("O jogo foi reiniciado!")
-//        println("Iniciando pelo Jogador ${jogadorAtual.simbolo}")
-//    }
-
-
     fun novoJogo(tabuleiro: Array<Array<Jogador>>) {
         println("Deseja uma nova jogada?")
         var resposta = readln()
         if (resposta.equals("Sim", true)) {
-
-            println("Iniciando o jogo com novos jogadores")
+            println("Iniciando um novo jogo")
             val tabuleiro = Array(3) { Array<Jogador>(3) { Jogador.VAZIO } }
             main()
+        } else if (resposta.equals("Não", true)){
+          println("Jogo encerrado")
         }
     }
 
+    fun nomearJogadores (){
+
+        println("Bem vindos Jogadores! Iremos iniciar nosso jogo!")
+        println("Digite o nome do primeiro jogador.")
+        jogador1 = readLine()
+
+        println("Digite o nome do segundo jogador.")
+        jogador2 = readLine()
+
+        println("Iniciando o jogo com os jogadores $jogador1 e $jogador2!!")
+        println("Analise o tabuleiro abaixo:")
+
+    }
+
+    fun criarTabuleiro(): Array<Array<Jogador>>{
+        val tabuleiro = arrayOf(
+            arrayOf(Jogador.VAZIO, Jogador.VAZIO, Jogador.VAZIO),
+            arrayOf(Jogador.VAZIO, Jogador.VAZIO, Jogador.VAZIO),
+            arrayOf(Jogador.VAZIO, Jogador.VAZIO, Jogador.VAZIO)
+        )
+        return tabuleiro
+    }
+
 }
-
-
 fun main() {
-
     val jogo = JogoDaVelha()
     var jogada = 0
     var vitoriaJogador1 = 0
     var vitoriaJogador2 = 0
     var empate = 0
 
-//- Deve ser possível nomear os dois jogadores, o nome do jogador deve ser exibido antes de cada jogada;
 
-    println("Bem vindos Jogadores! Iremos iniciar nosso jogo!")
-    println("Digite o nome do primeiro jogador.")
-    var jogador1 = readLine()
+    jogo.nomearJogadores()
+    jogo.imprimirTabuleiro()
 
-    println("Digite o nome do segundo jogador.")
-    var jogador2 = readLine()
+    var jogadorAtual = jogo.jogador1
+    while (jogada < 9 && !jogo.existeVencedor(jogo.tabuleiro)) {
 
-    println("Iniciando o jogo com os jogadores $jogador1 e $jogador2!!")
-    println("Analise o tabuleiro abaixo:")
-
-
-    //val tabuleiro = Array(3, { Array<Jogador>(3, {Jogador.VAZIO})})
-    val tabuleiro = arrayOf(
-        arrayOf(Jogador.VAZIO, Jogador.VAZIO, Jogador.VAZIO),
-        arrayOf(Jogador.VAZIO, Jogador.VAZIO, Jogador.VAZIO),
-        arrayOf(Jogador.VAZIO, Jogador.VAZIO, Jogador.VAZIO)
-    )
-    jogo.imprimirTabuleiro(tabuleiro)
-
-    //Primeira jogada
-
-    var jogadorAtual = jogador1
-
-    while (jogada < 9 && !jogo.existeVencedor(tabuleiro)) {
-
-        println("$jogadorAtual sua vez de jogar")
+        println("${jogadorAtual} sua vez de jogar")
         println("Digite a posição da linha de 0 a 2")
         var linha = readLine()!!.toInt()
 
@@ -151,7 +141,7 @@ fun main() {
 
         //validar a entrada do jogador
         //enquanto a posição estiver errada, pedir para o jogador inserir a entrada novamente.
-        while (jogo.validaJogada(linha, coluna, tabuleiro) == false) {
+        while (jogo.validaJogada(linha, coluna, jogo.tabuleiro) == false) {
             println("Opção Inválida, tente novamente.")
             println("Digite a posição da linha de 0 a 2")
             linha = readLine()!!.toInt()
@@ -159,29 +149,28 @@ fun main() {
             coluna = readLine()!!.toInt()
         }
 
-          tabuleiro[linha][coluna] = if (jogadorAtual == jogador1) Jogador.X else Jogador.O
+          jogo.tabuleiro[linha][coluna] = if (jogadorAtual == jogo.jogador1) Jogador.X else Jogador.O
 
-        jogo.imprimirTabuleiro(tabuleiro)
+        jogo.imprimirTabuleiro()
 
 
         //verificar de existe ganhador ou não, se houver ganhador parar o jogo.
 
-        if (jogo.existeVencedor(tabuleiro) == true) {
+        if (jogo.existeVencedor(jogo.tabuleiro) == true) {
             //vai parar o jogo
-            println("$jogadorAtual você ganhou o jogo!!")
-            if (jogadorAtual == jogador1) {
+            println("${jogadorAtual} você ganhou o jogo!!")
+            if (jogadorAtual == jogo.jogador1) {
                 vitoriaJogador1++
             } else {
                 vitoriaJogador2++
             }
 
-
         }
 
-        if (jogadorAtual == jogador1) {
-            jogadorAtual = jogador2
+        if (jogadorAtual == jogo.jogador1) {
+            jogadorAtual = jogo.jogador2
         } else {
-            jogadorAtual = jogador1
+            jogadorAtual = jogo.jogador1
         }
 
         jogada++ //jogo acabou ou não?
@@ -189,7 +178,7 @@ fun main() {
     }
     //qual a resposta do jogo, houve ganhador ou empate?
     //se o resultado da função verificar Vencedores for falso,ele me mostra um empate.
-    if (jogo.existeVencedor(tabuleiro) == false) {
+    if (jogo.existeVencedor(jogo.tabuleiro) == false) {
         println("Houve um empate no jogo!")
         empate++
     }
@@ -197,12 +186,12 @@ fun main() {
 //    Deve ser mantido o número de vitórias, derrotas e empates de cada jogador;
 
     println("Placar dos Jogadores:")
-    println("$jogador1")
+    println("${jogo.jogador1}")
     println("Empates $empate")
     println("Vitórias $vitoriaJogador1")
     println("Derrotas $vitoriaJogador2")
     println()
-    println("$jogador2")
+    println("${jogo.jogador2}")
     println("Empates $empate")
     println("Vitórias $vitoriaJogador2")
     println("Derrotas $vitoriaJogador1")
@@ -210,9 +199,7 @@ fun main() {
 
 //    Deve ser possível recomeçar o jogo com novos jogadores, limpando o histórico de partidas dos antigos
 //    jogadores;
-    jogo.novoJogo(tabuleiro)
-
-
+    jogo.novoJogo(jogo.tabuleiro)
 }
 
 
