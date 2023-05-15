@@ -12,8 +12,10 @@ class JogoDaVelha {
     var jogador1: String? = null
     var jogador2: String? = null
     var tabuleiro = criarTabuleiro()
+    var linha = readLine()!!.toInt()
+    var coluna = readLine()!!.toInt()
 
-    fun imprimirTabuleiro() {
+    fun imprimirTabuleiro(){
 
         for (linha in 0 until 3) {
             for (coluna in 0 until 3) {
@@ -94,7 +96,7 @@ class JogoDaVelha {
         }
     }
 
-    fun nomearJogadores (){
+    fun nomearJogadores (jogador1: String?, jogador2: String?): String{
 
         println("Bem vindos Jogadores! Iremos iniciar nosso jogo!")
         println("Digite o nome do primeiro jogador.")
@@ -105,7 +107,7 @@ class JogoDaVelha {
 
         println("Iniciando o jogo com os jogadores $jogador1 e $jogador2!!")
         println("Analise o tabuleiro abaixo:")
-
+        return String()
     }
 
     fun criarTabuleiro(): Array<Array<Jogador>>{
@@ -117,6 +119,15 @@ class JogoDaVelha {
         return tabuleiro
     }
 
+    fun validaPosição() {
+        while (validaJogada(linha, coluna,tabuleiro) == false) {
+            println("Opção Inválida, tente novamente.")
+            println("Digite a posição da linha de 0 a 2")
+            linha = readLine()!!.toInt()
+            println("Digite a posição da Coluna de 0 a 2")
+            coluna = readLine()!!.toInt()
+        }
+    }
 }
 fun main() {
     val jogo = JogoDaVelha()
@@ -124,7 +135,6 @@ fun main() {
     var vitoriaJogador1 = 0
     var vitoriaJogador2 = 0
     var empate = 0
-
 
     jogo.nomearJogadores()
     jogo.imprimirTabuleiro()
@@ -134,22 +144,17 @@ fun main() {
 
         println("${jogadorAtual} sua vez de jogar")
         println("Digite a posição da linha de 0 a 2")
-        var linha = readLine()!!.toInt()
+        jogo.linha
 
         println("Digite a posição da Coluna de 0 a 2")
-        var coluna = readLine()!!.toInt()
+        jogo.coluna
 
         //validar a entrada do jogador
         //enquanto a posição estiver errada, pedir para o jogador inserir a entrada novamente.
-        while (jogo.validaJogada(linha, coluna, jogo.tabuleiro) == false) {
-            println("Opção Inválida, tente novamente.")
-            println("Digite a posição da linha de 0 a 2")
-            linha = readLine()!!.toInt()
-            println("Digite a posição da Coluna de 0 a 2")
-            coluna = readLine()!!.toInt()
-        }
 
-          jogo.tabuleiro[linha][coluna] = if (jogadorAtual == jogo.jogador1) Jogador.X else Jogador.O
+        jogo.validaPosição()
+          jogo.tabuleiro[jogo.linha][jogo.coluna] = if (jogadorAtual == jogo.jogador1) Jogador.X
+          else Jogador.O
 
         jogo.imprimirTabuleiro()
 
