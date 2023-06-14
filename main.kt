@@ -147,13 +147,22 @@ class JogoDaVelha {
     }
 
 
-    fun novoJogo(tabuleiro: Array<Array<Jogador>>) {
+    fun novoJogo() {
         println("Deseja uma nova jogada?")
         var resposta = readln()
         if (resposta.equals("Sim", true)) {
-            println("Iniciando um novo jogo")
-            val tabuleiro = Array(3) { Array<Jogador>(3) { Jogador.VAZIO } }
-            main()
+            println("Com os mesmos jogadores?")
+            var resposta = readln()
+            if (resposta.equals("Sim", true)) {
+                println("Iniciando um novo jogo com os mesmos jogadores")
+                tabuleiro = criarTabuleiro()
+                rodarJogo()
+            } else if (resposta.equals("Não", true)) {
+                println("Ok, iremos iniciar com novos jogadores")
+                println("Iniciando um novo jogo")
+                val tabuleiro = Array(3) { Array<Jogador>(3) { Jogador.VAZIO } }
+                main()
+            }
         } else if (resposta.equals("Não", true)) {
             println("Jogo encerrado")
         }
@@ -210,7 +219,7 @@ fun main() {
 
     //    Deve ser possível recomeçar o jogo com novos jogadores, limpando o histórico de partidas dos antigos
     //    jogadores;
-    jogo.novoJogo(jogo.tabuleiro)
+    jogo.novoJogo()
 }
 
 
