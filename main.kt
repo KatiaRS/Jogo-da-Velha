@@ -11,14 +11,15 @@ enum class Jogador(var simbolo: String) {
 class JogoDaVelha {
     var jogador1: String? = null
     var jogador2: String? = null
-    var tabuleiro: Array<Array<Jogador>> = criarTabuleiro()
-    var linha: Int? = null
-    var coluna: Int? = null
+    private var tabuleiro: Array<Array<Jogador>> = criarTabuleiro()
+    private var linha: Int? = null
+    private var coluna: Int? = null
     var vitoriaJogador1 = 0
     var vitoriaJogador2 = 0
-    var jogadorAtual = jogador1
-    var jogada = 0
-    fun imprimirTabuleiro() {
+    private var jogadorAtual = jogador1
+    private var jogada = 0
+    var empate = 0
+    private fun imprimirTabuleiro() {
 
         for (linha in 0 until 3) {
             for (coluna in 0 until 3) {
@@ -34,7 +35,7 @@ class JogoDaVelha {
         }
     }
 
-    fun validaJogada(linha: Int, coluna: Int, tabuleiro: Array<Array<Jogador>>): Boolean {
+    private fun validaJogada(linha: Int, coluna: Int): Boolean {
         if (linha < 0 || linha >= 3 || coluna < 0 || coluna >= 3) {      //validando a posição se existe ou não
             return false
         }
@@ -46,7 +47,7 @@ class JogoDaVelha {
     }
 
     //verifica se algum jogador ganhou nas linhas
-    fun verificaGanhadorLinha(tabuleiro: Array<Array<Jogador>>): Boolean {
+    private fun verificaGanhadorLinha(): Boolean {
         for (linha in 0 until 3) {
             if (tabuleiro[linha][0] == tabuleiro[linha][1] && tabuleiro[linha][1] == tabuleiro[linha][2]
                 && tabuleiro[linha][0] != Jogador.VAZIO
@@ -57,7 +58,7 @@ class JogoDaVelha {
         return false
     }
 
-    fun verificaGanhadorColuna(tabuleiro: Array<Array<Jogador>>): Boolean {
+    private fun verificaGanhadorColuna(): Boolean {
         for (coluna in 0 until 3) {
             if (tabuleiro[0][coluna] == tabuleiro[1][coluna] && tabuleiro[1][coluna] == tabuleiro[2][coluna]
                 && tabuleiro[0][coluna] != Jogador.VAZIO
@@ -68,7 +69,7 @@ class JogoDaVelha {
         return false
     }
 
-    fun verificaGanhadorDiagonal(tabuleiro: Array<Array<Jogador>>): Boolean {
+    private fun verificaGanhadorDiagonal(): Boolean {
         if (tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2]
             && tabuleiro[0][0] != Jogador.VAZIO
         ) {
@@ -82,9 +83,9 @@ class JogoDaVelha {
         return false
     }
 
-    fun existeVencedor(tabuleiro: Array<Array<Jogador>>): Boolean {
-        return verificaGanhadorColuna(tabuleiro) || verificaGanhadorDiagonal(tabuleiro) ||
-                verificaGanhadorLinha(tabuleiro)
+    fun existeVencedor(): Boolean {
+        return verificaGanhadorColuna() || verificaGanhadorDiagonal() ||
+                verificaGanhadorLinha()
     }
 
     fun nomearJogadores() {
@@ -100,7 +101,7 @@ class JogoDaVelha {
         jogadorAtual = jogador1
     }
 
-    fun criarTabuleiro(): Array<Array<Jogador>> {
+    private fun criarTabuleiro(): Array<Array<Jogador>> {
         var tabuleiro = arrayOf(
             arrayOf(Jogador.VAZIO, Jogador.VAZIO, Jogador.VAZIO),
             arrayOf(Jogador.VAZIO, Jogador.VAZIO, Jogador.VAZIO),
@@ -109,27 +110,27 @@ class JogoDaVelha {
         return tabuleiro
     }
 
-    fun validaPosição() {
+    private fun validaPosição() {
         println("Digite a posição da linha de 0 a 2")
         linha = readLine()!!.toInt()
         println("Digite a posição da Coluna de 0 a 2")
         coluna = readLine()!!.toInt()
-        while (validaJogada(linha!!, coluna!!, tabuleiro) == false) {
+        while (validaJogada(linha!!, coluna!!) == false) {
             println("Opção Inválida, tente novamente.")
             validaPosição()
 
         }
     }
 
-    fun validaGanhador() {
+    private fun validaGanhador() {
         //verificar se existe ganhador ou não, se houver ganhador parar o jogo.
-        if (existeVencedor(tabuleiro) == true) {
+        if (existeVencedor() == true) {
             println("${jogadorAtual} você ganhou o jogo!!")
             validaVitoria()
         }
     }
 
-    fun validaVitoria() {
+    private fun validaVitoria() {
 
         if (jogadorAtual == jogador1) {
             vitoriaJogador1++
@@ -138,14 +139,13 @@ class JogoDaVelha {
         }
     }
 
-    fun trocaJogadores() {
+    private fun trocaJogadores() {
         if (jogadorAtual == jogador1) {
             jogadorAtual = jogador2
         } else {
             jogadorAtual = jogador1
         }
     }
-
 
     fun novoJogo() {
         println("Deseja uma nova jogada?")
@@ -156,6 +156,8 @@ class JogoDaVelha {
             if (resposta.equals("Sim", true)) {
                 println("Iniciando um novo jogo com os mesmos jogadores")
                 tabuleiro = criarTabuleiro()
+                jogada = 0
+                imprimirTabuleiro()
                 rodarJogo()
             } else if (resposta.equals("Não", true)) {
                 println("Ok, iremos iniciar com novos jogadores")
@@ -169,7 +171,7 @@ class JogoDaVelha {
     }
 
     fun rodarJogo(){
-        while (jogada < 9 && !existeVencedor(tabuleiro)) {
+        while (jogada < 9 && !existeVencedor()) {
 
             println("${jogadorAtual} sua vez de jogar")
             validaPosição()
@@ -192,27 +194,25 @@ fun main() {
     println("Bem vindos Jogadores!Iremos iniciar nosso jogo!")
     val jogo = JogoDaVelha()
     jogo.nomearJogadores()
-    var empate = 0
-
     jogo.rodarJogo()
 
     //mostrar a resposta do jogo, se houve ganhador ou empate.
     //se o resultado da função verificar Vencedores for falso,ele me mostra um empate.
-    if (jogo.existeVencedor(jogo.tabuleiro) == false) {
+    if (jogo.existeVencedor() == false) {
         println("Houve um empate no jogo!")
-        empate++
+        jogo.empate++
     }
 
     //    Deve ser mantido o número de vitórias, derrotas e empates de cada jogador;
 
     println("Placar dos Jogadores:")
     println("${jogo.jogador1}")
-    println("Empates $empate")
+    println("Empates ${jogo.empate}")
     println("Vitórias ${jogo.vitoriaJogador1}")
     println("Derrotas ${jogo.vitoriaJogador2}")
     println()
     println("${jogo.jogador2}")
-    println("Empates $empate")
+    println("Empates ${jogo.empate}")
     println("Vitórias ${jogo.vitoriaJogador2}")
     println("Derrotas ${jogo.vitoriaJogador1}")
 
