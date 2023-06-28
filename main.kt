@@ -8,17 +8,17 @@ enum class Jogador(var simbolo: String) {
     }
 }
 
-class JogoDaVelha {
-    var jogador1: String? = null
-    var jogador2: String? = null
+class JogoDaVelha(
+    var jogador1: String,
+    var jogador2: String
+) {
+
     private var tabuleiro: Array<Array<Jogador>> = criarTabuleiro()
     private var linha: Int? = null
     private var coluna: Int? = null
-    var vitoriaJogador1 = 0
-    var vitoriaJogador2 = 0
     private var jogadorAtual = jogador1
     private var jogada = 0
-    var empate = 0
+
     private fun imprimirTabuleiro() {
 
         for (linha in 0 until 3) {
@@ -88,18 +88,7 @@ class JogoDaVelha {
                 verificaGanhadorLinha()
     }
 
-    fun nomearJogadores() {
-        println("Digite o nome do primeiro jogador.")
-        jogador1 = readLine()
 
-        println("Digite o nome do segundo jogador.")
-        jogador2 = readLine()
-
-        println("Iniciando o jogo com os jogadores $jogador1 e $jogador2!!")
-        println("Analise o tabuleiro abaixo:")
-        imprimirTabuleiro()
-        jogadorAtual = jogador1
-    }
 
     private fun criarTabuleiro(): Array<Array<Jogador>> {
         var tabuleiro = arrayOf(
@@ -122,22 +111,6 @@ class JogoDaVelha {
         }
     }
 
-    private fun validaGanhador() {
-        //verificar se existe ganhador ou não, se houver ganhador parar o jogo.
-        if (existeVencedor() == true) {
-            println("${jogadorAtual} você ganhou o jogo!!")
-            validaVitoria()
-        }
-    }
-
-    private fun validaVitoria() {
-
-        if (jogadorAtual == jogador1) {
-            vitoriaJogador1++
-        } else {
-            vitoriaJogador2++
-        }
-    }
 
     private fun trocaJogadores() {
         if (jogadorAtual == jogador1) {
@@ -168,9 +141,12 @@ class JogoDaVelha {
         } else if (resposta.equals("Não", true)) {
             println("Jogo encerrado")
         }
+
     }
 
-    fun rodarJogo(){
+    fun rodarJogo(): String{
+        tabuleiro = criarTabuleiro()
+        jogada = 0
         while (jogada < 9 && !existeVencedor()) {
 
             println("${jogadorAtual} sua vez de jogar")
@@ -179,12 +155,16 @@ class JogoDaVelha {
             imprimirTabuleiro()
 
             //verificar se existe ganhador ou não, se houver ganhador parar o jogo.
-            validaGanhador()
+            if (existeVencedor() == true) {
+                println("${jogadorAtual} você ganhou o jogo!!")
+                return jogadorAtual
+            }
             trocaJogadores()
 
             jogada++ //jogo acabou ou não?
 
         }
+        return "Empate"
     }
 
 }
@@ -192,34 +172,15 @@ class JogoDaVelha {
 fun main() {
 
     println("Bem vindos Jogadores!Iremos iniciar nosso jogo!")
-    val jogo = JogoDaVelha()
-    jogo.nomearJogadores()
-    jogo.rodarJogo()
+    println("Digite o nome do primeiro jogador.")
+    val jogador1 = readLine()!!
 
-    //mostrar a resposta do jogo, se houve ganhador ou empate.
-    //se o resultado da função verificar Vencedores for falso,ele me mostra um empate.
-    if (jogo.existeVencedor() == false) {
-        println("Houve um empate no jogo!")
-        jogo.empate++
-    }
+    println("Digite o nome do segundo jogador.")
+    val jogador2 = readLine()!!
 
-    //    Deve ser mantido o número de vitórias, derrotas e empates de cada jogador;
-
-    println("Placar dos Jogadores:")
-    println("${jogo.jogador1}")
-    println("Empates ${jogo.empate}")
-    println("Vitórias ${jogo.vitoriaJogador1}")
-    println("Derrotas ${jogo.vitoriaJogador2}")
-    println()
-    println("${jogo.jogador2}")
-    println("Empates ${jogo.empate}")
-    println("Vitórias ${jogo.vitoriaJogador2}")
-    println("Derrotas ${jogo.vitoriaJogador1}")
-
-
-    //    Deve ser possível recomeçar o jogo com novos jogadores, limpando o histórico de partidas dos antigos
-    //    jogadores;
-    jogo.novoJogo()
+    println("Iniciando o jogo com os jogadores $jogador1 e $jogador2!!")
+    val campeonato: Campeonato = Campeonato(nomeJogador1 = jogador1, nomeJogador2 = jogador2)
+    campeonato.iniciarCampeonato()
 }
 
 
