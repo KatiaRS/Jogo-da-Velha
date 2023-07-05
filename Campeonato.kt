@@ -17,21 +17,26 @@ class Campeonato(
 
             } else {
                 if (resultado == nomeJogador1) {
-                    println("$nomeJogador1 ponto pra você!!")
                     vitoriaJogador1++
                 } else {
-                    println("$nomeJogador2 ponto pra você!!")
-                    vitoriaJogador2++
+                   vitoriaJogador2++
                 }
                 println("Veja o placar")
             }
             println()
             placar()
             println()
-            resultado = jogoDaVelha.rodarJogo()
-
-
+            if (vitoriaJogador1 == 2) {
+                println("$nomeJogador1 você ganhou o campeonato")
+            } else {
+                if (vitoriaJogador2 == 2) {
+                    println("$nomeJogador2 você ganhou o campeonato")
+                    break
+                }
+            }
+         resultado = jogoDaVelha.rodarJogo()
         }
+
     }
     fun placar(){
         println("Empate $empate")
@@ -40,5 +45,5 @@ class Campeonato(
     }
 }
 
-//resultado é o nome do jogador que venceu, entao preciso alimentar o ganhador.
-// testar a condição de campeonato
+//o melhor de três
+//Break??
